@@ -3,11 +3,13 @@ This repository contains code for the paper
 
 **Closing the Approximation Gap in Simulation-free Latent SDEs** \
 Henry D. Smith, Brian L. Trippe, Scott W. Linderman \
-[arXiv preprint](https://arxiv.org/abs/2606.16138) \
+[arXiv preprint](https://arxiv.org/abs/2606.16138)
 
 Helmholtz-SDE is a simulation-free variational inference (VI) algorithm for latent stochastic differential equations (latent SDEs).
-Helmholtz-SDE can provide **order-of-magnitude** speedups over VI algorithms that require numerical simulation, such as latent-SDE `(Li et al., 2020)` and `Archambeau et al., 2007`. 
+Helmholtz-SDE can provide **order-of-magnitude speedups** over VI algorithms that require numerical simulation, such as latent-SDE `(Li et al., 2020)` and `Archambeau et al., 2007`. 
 Compared to recent VI algorithms that do not require simulation, such as SVISE `(Course and Nair, 2023)` and SDE Matching `(Bartosh et al., 2025)`, Helmholtz-SDE uses a **more expressive variational family**.
+
+**[TODO: add GIF]**
 
 ## Getting started
 For an introduction to the Helmholtz-SDE codebase, we recommend reviewing the [notebook](experiments/lorenz/lorenz_attractor.ipynb) for the Lorenz attractor dataset. 
