@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "helmholtz-sde"
+version = "0.1"
+requires-python = ">=3.12"
+readme = "readme.md"
+license = {file="LICENSE"}
+dependencies = [
+    "jax",
+    "flax",
+    "optax",
+    "tensorflow-probability",
+    "numpy",
+    "matplotlib",
+    "tqdm",
+    "pytest",
+]
+authors = [
+    {name="Henry Smith"},
+    {name="Brian Trippe"},
+    {name="Scott Linderman"},
+]
+maintainers = [
+    {name="Henry Smith", email="smithhd@stanford.edu"}
+]
+
+[project.optional-dependencies]
+experiments = [
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "juliacall",
+]
+
+[project.urls]
+repository = "https://github.com/lindermanlab/helmholtz-sde"
+homepage = "https://github.com/lindermanlab/helmholtz-sde"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["helmholtz_sde*"]

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sing"
+version = "0.2"
+description = "SING: SDE Inference via Natural Gradients"
+requires-python = ">=3.12"
+readme = "README.md"
+license = {file="LICENSE"}
+dependencies = [
+    "tensorflow-probability",
+    "optax",
+    "matplotlib",
+    "flax"
+]
+authors = [
+    {name="Amber Hu"}, 
+    {name="Henry Smith"}, 
+    {name="Scott Linderman"}
+]
+maintainers = [
+    {name="Amber Hu", email="amberhu@stanford.edu"},
+    {name="Henry Smith", email="smithhd@stanford.edu"}
+]
+
+[project.optional-dependencies]
+notebooks = [
+    "lindi",
+    "scikit-learn"
+]
+
+[project.urls]
+repository = "https://github.com/lindermanlab/sing"
+homepage = "https://github.com/lindermanlab/sing"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sing*"]

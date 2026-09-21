@@ -1,0 +1,37 @@
+.*
+*~
+!.gitignore
+
+# Model checkpoints
+wandb/*
+logs/*
+checkpoints/*
+*.wandb
+*.log
+*.err
+*.out
+
+# Datasets
+*.pkl
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# CSV files
+*.csv
+
+# SLURM sbatch scripts
+*.sbatch
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Packaging / distribution artifacts
+*.egg-info/
+*.egg
+dist/
+build/
