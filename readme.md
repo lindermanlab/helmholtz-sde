@@ -3,7 +3,7 @@ This repository contains code for the paper
 
 **Closing the Approximation Gap in Simulation-free Latent SDEs** \
 Henry D. Smith, Brian L. Trippe, Scott W. Linderman \
-Advances in Neural Information Processing Systems \ 
+Advances in Neural Information Processing Systems \
 [arXiv preprint](https://arxiv.org/abs/2606.16138) \
 [OpenReview]()
 
