@@ -620,7 +620,7 @@ def plot_rts_posterior_marginals(ys_obs: jnp.array, obs_times: jnp.array, ms_rts
             mu, sd = means[b, :, j], stds[b, :, j]
             (line,) = ax.plot(ts, mu, linewidth=2.0)
             ax.fill_between(ts, mu - num_std * sd, mu + num_std * sd, alpha=0.25, color=line.get_color())
-            ax.plot(ot[b], ys[b, :, j], linestyle="None", marker="x", markersize=6, mew=1.5, color="0.6")
+            ax.plot(ot[b], ys[b, :, j], linestyle="None", marker="x", markersize=6, mew=1.5, color=line.get_color())
             if true_latents is not None:
                 ax.plot(ts_true[::10], true_latents[b, ::10, j], color="0.6", linewidth=1.5, zorder=1) # subsampled for speed
         ax.set_ylabel(labels[j], fontsize=fontsize)

@@ -3,7 +3,9 @@ This repository contains code for the paper
 
 **Closing the Approximation Gap in Simulation-free Latent SDEs** \
 Henry D. Smith, Brian L. Trippe, Scott W. Linderman \
-[arXiv preprint](https://arxiv.org/abs/2606.16138)
+Advances in Neural Information Processing Systems
+[arXiv preprint](https://arxiv.org/abs/2606.16138) \
+[OpenReview]()
 
 Helmholtz-SDE is a simulation-free variational inference (VI) algorithm for latent stochastic differential equations (latent SDEs).
 Helmholtz-SDE can provide **order-of-magnitude speedups** over VI algorithms that require numerical simulation, such as latent-SDE `(Li et al., 2020)` and `Archambeau et al., 2007`. 
@@ -32,15 +34,17 @@ Then install the `helmholtz_sde` package and its dependencies with:
 ```
 pip install -e .
 ```
-The code under `experiments/` additionally uses `pandas`, `scipy`, `scikit-learn` and `juliacall` (the rotifer-algae wavelet analysis). To install these dependencies as well, run:
-```
-pip install -e ".[experiments]"
-```
 
 Helmholtz-SDE also relies on [SING](https://github.com/lindermanlab/sing) `(Hu et al., 2025)`.
 A modified copy is contained in `sing/`. Install this local copy in editable mode with:
 ```
 pip install -e sing/
+```
+
+The code under `experiments/` additionally uses `pandas`, `scipy`, `scikit-learn` and `juliacall`. 
+To install these dependencies as well, run:
+```
+pip install -e ".[experiments]"
 ```
 
 ## Content
@@ -62,6 +66,7 @@ It is specified via the `gauge` argument:
 train(..., gauge="sym") # SVISE (Course and Nair, 2023)
 train(..., gauge="sqrt") # SDE Matching (Bartosh et al., 2025)
 ```
+`sqrt` is the default.
 
 There are two supported divergence-free corrections, `LeastSquaresCorrection` and `TaylorCorrection`.
 The divergence-free correction is passed to `train` as an object. 
@@ -69,10 +74,11 @@ The divergence-free correction is passed to `train` as an object.
 from helmholtz_sde.helmholtz.subspace import LeastSquaresCorrection
 from helmholtz_sde.helmholtz.taylor import TaylorCorrection
 
-train(..., gauge="sqrt", div_free=LeastSquaresCorrection(ell=1, kappa=1, n_mc=1)) # the default
+train(..., gauge="sqrt", div_free=LeastSquaresCorrection(ell=1, kappa=1, n_mc=1)) # projection 
 train(..., gauge="sqrt", div_free=TaylorCorrection(ell=1)) # Taylor approximation
 train(..., gauge="sqrt", div_free=None) # no correction
 ```
+`LeastSquaresCorrection(ell=1, kappa=1, n_mc=1)` is the default.
 
 ## Experiments
 Each subdirectory of `experiments/` corresponds to one experimental setting:

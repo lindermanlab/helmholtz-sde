@@ -301,7 +301,7 @@ def plot_posterior_marginals(ys_obs: jnp.array, obs_times: jnp.array, post_net: 
 
             ax.fill_between(ts_np, mu - num_std * sd, mu + num_std * sd, alpha=0.25, color=c)
             if dim_mask[j]:
-                ax.plot(ot_np[b], ys_np[b, :, obs_dim_counter], linestyle="None", marker="x", markersize=6, mew=1.5, color="0.6")
+                ax.plot(ot_np[b], ys_np[b, :, obs_dim_counter], linestyle="None", marker="x", markersize=6, mew=1.5, color=c)
 
             if posterior_mean_true is not None:
                 mu_true = posterior_mean_true[b, :, j]
@@ -372,7 +372,7 @@ def plot_posterior_samples(xs_post: jnp.array, ys_obs: jnp.array, obs_times: jnp
             ax.plot(ts_np, ms_np[b, :, j], color=color, linewidth=2.0, zorder=3)
             if true_latents is not None:
                 ax.plot(np.linspace(0.0, t_max, true_latents.shape[1]), np.asarray(true_latents)[b, :, j], color="0.6", linewidth=1.5, zorder=2) # same grey as in plot_posterior_marginals
-            ax.plot(ot_np[b], ys_np[b, :, j], linestyle="None", marker="x", markersize=6, mew=1.5, color="0.6", zorder=4)
+            ax.plot(ot_np[b], ys_np[b, :, j], linestyle="None", marker="x", markersize=6, mew=1.5, color=color, zorder=4)
             ax.set_ylabel(labels[j], fontsize=fontsize)
             ax.tick_params(labelsize=fontsize - 2)
         axs[b, 0].set_title(f"Trial {b + 1}", fontsize=fontsize, loc="left")
@@ -467,12 +467,18 @@ def _concise_tick(value, _pos):
     return f"{value:.0e}"
 
 
-def plot_losses(metrics: Dict[str, Any], keys: Sequence[str] = ("loss", "kl", "rec", "prior"), titles: Optional[Sequence[str]] = None, figsize: Optional[Tuple[float, float]] = None, fontsize: float = 12.0, linewidth: float = 0.8, yscale: str = "symlog", xticks: Optional[Sequence] = None, yticks: Optional[Sequence] = None, xticklabels: Optional[Sequence] = None, yticklabels: Optional[Sequence] = None):
+def plot_losses(metrics: Union[Dict[str, Any], Sequence[Dict[str, Any]]], keys: Sequence[str] = ("loss", "kl", "rec", "prior"), titles: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, colors: Optional[Sequence[str]] = None, figsize: Optional[Tuple[float, float]] = None, fontsize: float = 12.0, linewidth: float = 0.8, yscale: str = "symlog", xticks: Optional[Sequence] = None, yticks: Optional[Sequence] = None, xticklabels: Optional[Sequence] = None, yticklabels: Optional[Sequence] = None):
     """
     Plot training loss curves, one panel per quantity
     By default shows the total loss, the KL term, the reconstruction term, and the initial KL (KL0)
-    metrics is the dict returned by train, holding a per-iteration array for each key
+    metrics is the dict returned by train, holding a per-iteration array for each key, or a sequence of such dicts whose 
+    curves are overlaid with the given labels and colors
     """
+
+    if isinstance(metrics, dict):
+        metrics = [metrics]
+    labels = [None] * len(metrics) if labels is None else labels
+    colors = [None] * len(metrics) if colors is None else colors
 
     default_titles = {"loss": "Total loss", "kl": "KL", "rec": "Reconstruction", "prior": "KL0 (initial KL)"}
     if titles is None:
@@ -495,7 +501,8 @@ def plot_losses(metrics: Dict[str, Any], keys: Sequence[str] = ("loss", "kl", "r
     xticklabels, yticklabels = _per_panel(xticklabels), _per_panel(yticklabels)
 
     for j, (ax, key, title) in enumerate(zip(axs, keys, titles)):
-        ax.plot(np.asarray(metrics[key]), linewidth=linewidth)
+        for run, label, color in zip(metrics, labels, colors):
+            ax.plot(np.asarray(run[key]), linewidth=linewidth, label=label, color=color)
         ax.set_yscale(yscale)
         ax.yaxis.set_major_formatter(mticker.FuncFormatter(_concise_tick))
         ax.yaxis.set_minor_formatter(mticker.NullFormatter())
@@ -513,4 +520,8 @@ def plot_losses(metrics: Dict[str, Any], keys: Sequence[str] = ("loss", "kl", "r
 
         ax.tick_params(labelsize=fontsize - 2)
 
+    if any(label is not None for label in labels):
+        legend = axs[0].legend(fontsize=fontsize - 2)
+        for handle in legend.get_lines():
+            handle.set_linewidth(2.0)
     return fig, axs
