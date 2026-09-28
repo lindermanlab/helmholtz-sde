@@ -15,7 +15,7 @@ Compared to recent VI algorithms that do not require simulation, such as SVISE `
   <img src="imgs/helmholtz_sde_comparison.gif" alt="Fitting Helmholtz-SDE, SDE Matching, SING and latent-SDE on noisy Lorenz attractor: samples from the learned prior SDE and the negative ELBO against training time" width="100%">
 </p>
 
-*Illustrative run (not the benchmark in the paper): Helmholtz-SDE, SDE Matching, SING, and Latent SDE on the noisy Lorenz attractor with `K = 3` latent dimensions. Prior samples from all four learned models and the true prior are driven by the same Brownian motion path.*
+*An illustrative example (not the benchmark from the paper): Helmholtz-SDE, SDE Matching, SING, and Latent SDE on the noisy Lorenz attractor with `K = 3` latent dimensions. Prior samples from all four learned models and the true prior are sampled using the same Brownian motion paths.*
 
 ## Getting started
 For an introduction to the Helmholtz-SDE codebase, we recommend reviewing the [notebook](experiments/lorenz/lorenz_attractor.ipynb) for the Lorenz attractor dataset. 
