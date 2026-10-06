@@ -256,20 +256,27 @@ def lagged_correlation_matrix_from_segments(segments: List[np.ndarray], lags: np
     valid = np.arange(max_T)[None, :] < lengths[:, None] # (n_visits, max_T)
     count = valid.sum(axis=0) # (max_T) number of visits reaching each time
 
-    # Per-time means and standard deviations, pooled over the visits that reach each time
-    mean = Z.sum(axis=0) / count[:, None]
-    Zc = (Z - mean[None]) * valid[:, :, None] # centered, zero beyond the end of each visit
-    std = np.maximum(np.sqrt(np.sum(Zc ** 2, axis=0) / count[:, None]), eps)
+    # Per-time sums over the visits as batched products; Z is zero beyond the end of each visit, so products with the
+    # values at t + lag only involve the visits that reach t + lag
+    Z_left = np.ascontiguousarray(Z.transpose(1, 2, 0)) # (max_T, 2, n_visits)
+    Z_right = np.ascontiguousarray(Z.transpose(1, 0, 2)) # (max_T, n_visits, 2)
+    Z2_left = Z_left ** 2
+    V_right = np.ascontiguousarray(valid.T[:, :, None].astype(float)) # (max_T, n_visits, 1)
+    sum_all, sq_all = Z.sum(axis=0), (Z ** 2).sum(axis=0) # (max_T, 2)
 
-    # Lagged correlations at each time as one batched product over the visits
-    Zc_left = np.ascontiguousarray(Zc.transpose(1, 2, 0)) # (max_T, 2, n_visits)
-    Zc_right = np.ascontiguousarray(Zc.transpose(1, 0, 2)) # (max_T, n_visits, 2)
+    # Lagged correlations at each time, taken over the visits that reach t and t + lag
     for k, lag in enumerate(lags):
         if lag >= max_T:
             continue
-        cov = np.matmul(Zc_left[:max_T - lag], Zc_right[lag:]) / count[lag:, None, None] # (max_T - lag, 2, 2)
-        denom = np.maximum(std[:max_T - lag, :, None] * std[lag:, None, :], eps)
-        C[k] = np.mean(cov / denom, axis=0)
+        T = max_T - lag
+        n = count[lag:, None] # (T, 1), at least 1 since the longest visit reaches every t + lag
+        mean_A = np.matmul(Z_left[:T], V_right[lag:])[..., 0] / n # (T, 2), at t over those visits
+        var_A = np.matmul(Z2_left[:T], V_right[lag:])[..., 0] / n - mean_A ** 2
+        mean_B = sum_all[lag:] / n # (T, 2), at t + lag
+        var_B = sq_all[lag:] / n - mean_B ** 2
+        cov = np.matmul(Z_left[:T], Z_right[lag:]) / n[:, :, None] - mean_A[:, :, None] * mean_B[:, None, :] # (T, 2, 2)
+        std_A, std_B = np.sqrt(np.maximum(var_A, 0.0)), np.sqrt(np.maximum(var_B, 0.0))
+        C[k] = np.mean(cov / np.maximum(std_A[:, :, None] * std_B[:, None, :], eps), axis=0)
     return C
 
 
