@@ -82,7 +82,7 @@ class GaussianFixedVariance(Gaussian):
 
 def posterior_true_logprob(ys_obs: jnp.array, obs_times: jnp.array, ys_true: jnp.array, t_grid: jnp.array, encoder: ForwardGRUEncoder, post_net: InferenceNetwork, params: Dict[str, Any], process_ctx: Callable, ssigma: float, batch_size: int = 64) -> float:
     """
-    Log probability of the true latents under the approximate posterior, holding out training observations
+    Posterior predictive log likelihood at unobserved times, evaluated at the noise-free observations
     """
     B, D = ys_obs.shape[0], ys_obs.shape[-1]
     C, d = params["output_params"]["C"], params["output_params"]["d"]
@@ -187,13 +187,13 @@ def plot_lagged_autocorr_compare(paths_true: np.ndarray, paths_model: np.ndarray
 
 def global_correlation_error(paths_true: np.ndarray, paths_model: np.ndarray, dt: float, max_time: float = 2.0, skip: int = 50) -> float:
     """
-    Squared Frobenius distance between the time-lagged cross-correlation matrices of the true and the learned prior,
-    averaged over lags 0, skip, ..., max_time / dt
+    Entrywise RMSE between the time-lagged cross-correlation matrices of the true and the learned prior
+    Squared differences are averaged over lags 0, skip, ..., max_time / dt and matrix entries before taking the square root
     """
     lags = _resolve_lags(int(round(max_time / dt)), skip)
     corr_true = compute_lagged_crosscorr(paths_true, lags)
     corr_model = compute_lagged_crosscorr(paths_model, lags)
-    return float(np.mean(np.sum((corr_true - corr_model) ** 2, axis=(1, 2))))
+    return float(np.sqrt(np.mean((corr_true - corr_model) ** 2)))
 
 
 # --------------------- Within-lobe time-lagged correlations ---------------------

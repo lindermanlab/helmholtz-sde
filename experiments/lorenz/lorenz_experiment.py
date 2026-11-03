@@ -112,7 +112,7 @@ def main() -> None:
     parser.add_argument("--embedding_size", type=int, default=100)
     parser.add_argument("--depth", type=int, default=2)
     parser.add_argument("--n_iters", type=int, default=30000)
-    parser.add_argument("--n_reps", type=int, default=5)
+    parser.add_argument("--n_reps", type=int, default=10)
     parser.add_argument("--learn_diff", type=int, choices=[0, 1], default=1)
     parser.add_argument("--gauge", type=str, choices=["sqrt", "sym"], default="sqrt")
     parser.add_argument("--div_free", type=str, default="none", choices=["none", "taylor", "least_squares"])
