@@ -5,7 +5,7 @@ This repository contains code for the paper
 Henry D. Smith, Brian L. Trippe, Scott W. Linderman \
 Advances in Neural Information Processing Systems \
 [arXiv preprint](https://arxiv.org/abs/2606.16138) \
-[OpenReview]()
+[OpenReview](https://openreview.net/forum?id=inTYe61WZF)
 
 Helmholtz-SDE is a simulation-free variational inference (VI) algorithm for latent stochastic differential equations (latent SDEs).
 Helmholtz-SDE can provide **order-of-magnitude speedups** over VI algorithms that require numerical simulation, such as latent-SDE `(Li et al., 2020)` and `Archambeau et al., 2007`. 
